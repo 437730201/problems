@@ -1,0 +1,166 @@
+# -*- coding: utf-8 -*-
+# @TIME     : 2018/12/22 上午 11:13
+# @Author   : Marst
+"""
+实现双向链表
+"""
+
+class Node(object):
+    def __init__(self,data = None):
+        self.data = data
+        self.pre = None
+        self.next = None
+
+class chain_table():
+    def __init__(self):
+        head = Node()
+        tail = Node()
+        self.head = head
+        self.tail = tail
+
+        self.head.next = self.tail
+        self.tail.pre = self.head
+
+    def __len__(self):
+        length = 0
+        node = self.head
+        while node.next != self.tail:
+            length += 1
+            node = node.next
+        return length
+
+    def __reversed__(self):
+        """
+
+        :return:
+        """
+        pre_head = self.head
+        tail = self.tail
+
+        def reverse(pre_node,node):
+            if node:
+                next_node = node.next
+                node.next = pre_node
+                node.pre = next_node
+
+                if pre_node is self.head:
+                    pre_node.next = None
+
+                if node is self.tail:
+                    node.pre = None
+                return reverse(node,next_node)
+            else:
+                self.tail = pre_head
+                self.head = tail
+        return reverse(self.head,self.head.next)
+
+    def append(self,data):
+
+        node = Node(data)
+        pre = self.tail.pre
+        pre.next = node
+        node.pre = pre
+        self.tail.pre = node
+        node.next = self.tail
+
+    def get(self,index):
+        """
+        @todo
+        :param index:
+        :return:
+        """
+        length = len(self)
+        index = index if index >= 0 else index + 1 + length
+        if index > length or index < 0 : return None
+        node = self.head.next
+        while index:
+            node = node.next
+            index -= 1
+        return node
+
+    def insert(self,index,data):
+        """
+        @todo 指定位置插入数据
+            考虑位置查询方式
+        :param index:
+        :param data:
+        :return:
+        """
+        length = len(self)
+        if abs(index + 1) > length:
+            return False
+
+        index = index if index >= 0 else index + 1 + length
+        next_node = self.get(index)
+        if next_node:
+            # 调整数据结构
+            node = Node(data)
+            #
+            pre_node = next_node.pre
+            #与前者 后部连接
+            pre_node.next = node
+
+            node.pre = pre_node
+            node.next = next_node
+            # 与后者 前段连接
+            next_node.pre = node
+            return node
+
+    def set(self,index,data):
+        """
+        @todo 重新赋值
+        :param index:
+        :param data:
+        :return:
+        """
+
+        node = self.get(index)
+        if node:
+            node.data = data
+        return node
+
+    def delete(self,index):
+
+        node = self.get(index)
+        if node:
+            node.pre.next = node.next
+            node.next.pre = node.pre
+            return True
+        return False
+
+    def clear(self):
+
+        self.head.next = self.tail
+        self.tail.pre = self.head
+
+    def show(self,order = 1):
+
+        if order >= 1:
+            node = self.head.next
+            while node is not  self.tail:
+                print(node.data,end='')
+                node = node.next
+        else:
+            node = self.tail.pre
+            while node is not self.head:
+                print(node.data,end='')
+                node = node.pre
+        print("\nThat's all.")
+
+
+if __name__ == '__main__':
+
+    li = chain_table()
+    li.append(1)
+    li.append(2231)
+    # li.set(1,'999')
+    li.insert(1,'000')
+    # li.show()
+    # s = li.delete(2)
+    # print(s)
+    li.show()
+    li.clear()
+    li.show()
+
+
+
