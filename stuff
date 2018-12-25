@@ -1,0 +1,114 @@
+# -*- coding: utf-8 -*-
+# @TIME     : 2018/12/19 下午 03:40
+# @Author   : Marst
+
+"""
+给你10分钟时间，根据上排给出十个数，在其下排填出对应的十个数
+要求下排每个数都是先前上排那十个数在下排出现的次数。
+上排的十个数如下：
+【0，1，2，3，4，5，6，7，8，9】
+
+举一个例子，
+数值: 0,1,2,3,4,5,6,7,8,9
+分配: 6,2,1,0,0,0,1,0,0,0
+0在下排出现了6次，1在下排出现了2次，
+2在下排出现了1次，3在下排出现了0次....
+以此类推..
+"""
+
+# from collections import OrderedDict
+#
+# keys = ['1','2','a','b','c','d']
+# vals = [i for i in range(len(keys))]
+# items = zip(keys,vals)
+#
+# print(OrderedDict(items))
+
+# vals = [0,1,2,3,4,5,6,7,8,9]
+
+
+import numpy as np
+import random
+from collections import Counter
+
+vals = [i for i in range(10)]
+# ans = np.zeros(10)
+ans = [0]*10
+print(vals)
+# random.shuffle(vals)
+# print(vals)
+print(ans)
+
+def counter(arr):
+    return Counter(arr).most_common(1)
+
+def single_list(arr,target):
+    return arr.count(target)
+
+
+def cal_num2(vals,ans):
+    # from copy import copy
+    n = 0
+    while n <= 10:
+        for y,val in enumerate(vals):
+            t = ans.count(val)
+            ans[y] = t
+    print('ans',ans)
+
+def cal_num(vals,ans):
+
+    from copy import copy
+
+    loop_time = 0
+    flag = True
+    while flag or loop_time > 10:
+        a = copy(ans)
+        for y,val in enumerate(vals):
+            t = ans.count(val)
+
+            if ans[y] == t:
+                continue
+            else:
+                ans[y] = t
+                # break
+        loop_time = loop_time + 1
+
+        # if sum(ans) != 10:
+        #     continue
+        # print('ans', ans)
+        if a == ans:
+            flag = False
+            # break
+        else:
+            # print('loop_time',loop_time)
+            continue
+
+    print('total loop_time', loop_time)
+    # print('flag',flag)
+    print(vals)
+    print(ans)
+
+def loot_test(vals,ans,loop = 4 ,limit_time = 0.01):
+    i = 0
+    import time
+    flag = True
+
+    while flag:
+        print('*-*' * 20 + str(i))
+        t = time.time()
+        vals1 = random.sample(vals, len(vals))
+        cal_num(vals1, ans)
+
+        t1 = time.time()
+        i = i + 1
+        cost = t1 - t
+
+        if cost > limit_time:
+            continue
+        flag = False
+    print(cost)
+
+
+
+loot_test(vals,ans,loop = 2)
+print('Done')
