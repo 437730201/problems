@@ -1,0 +1,79 @@
+# -*- coding: utf-8 -*-
+# @TIME     : 2018/11/26 上午 11:16
+# @Author   : Marst
+
+import multiprocessing
+
+
+def process(num):
+    print('Process:',num)
+
+def async_test():
+    import asyncio
+
+    async def compute(x, y):
+        print("Compute %s + %s ..." % (x, y))
+        await asyncio.sleep(1.0)
+        return x + y
+
+    async def print_sum(x, y):
+        result = await compute(x, y)
+        print("%s + %s = %s" % (x, y, result))
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(print_sum(1, 2))
+    loop.close()
+
+def buy_test():
+    def consumer():
+        r = ''
+        while True:
+            n = yield r
+            if not n:
+                return
+            print('[CONSUMER] Consuming %s...' % n)
+            r = '200 OK'
+
+    def produce(c):
+        c.send(None)
+        n = 0
+        while n < 5:
+            n = n + 1
+            print('[PRODUCER] Producing %s...' % n)
+            r = c.send(n)
+            print('[PRODUCER] Consumer return: %s' % r)
+        c.close()
+
+    c = consumer()
+    produce(c)
+
+def talk_test():
+    import threading
+    import asyncio
+
+    @asyncio.coroutine
+    def hello():
+        print('Hello world! (%s)' % threading.currentThread())
+        yield from asyncio.sleep(1)
+        print('Hello again! (%s)' % threading.currentThread())
+
+    loop = asyncio.get_event_loop()
+    tasks = [hello(), hello()]
+    loop.run_until_complete(asyncio.wait(tasks))
+    loop.close()
+
+if __name__ == '__main__':
+    # for i in range(7):
+    #     p = multiprocessing.Process(target=process,args=(i,))
+    #     p.start()
+    #
+    #
+    # print('CPU number:'+str(multiprocessing.cpu_count()))
+    #
+    # for p in multiprocessing.active_children():
+    #     print('Child process name: ',p.name," id: ",str(p.pid))
+    #
+    # print('Done.')
+    # async_test()
+    # buy_test()
+    talk_test()
