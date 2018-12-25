@@ -1,0 +1,57 @@
+# -*- coding: utf-8 -*-
+# @TIME     : 2018/12/24 下午 04:37
+# @Author   : Marst
+
+"""
+输入一个整形数组，数组里有正数也有负数。
+数组中连续的一个或多个整数组成一个子数组，每个子数组都有一个和。
+求所有子数组的和的最大值。要求时间复杂度为O(n)。
+"""
+
+class max_son():
+
+    def __init__(self, data):
+
+        self.length = len(data)
+        self.loop = 0
+        self.max_val,self.best_group = self.run(data)
+
+        print('input arr {}\n'
+              'best son group {}\n'
+              'biggest sum result {}'.format(data,
+                                          self.best_group,
+                                          self.max_val))
+
+    def run(self,data):
+
+        max_val,best_group = 0,[]
+        n = 1
+        while n < self.length:
+            son,group = self.arr_group(n,data)
+            # print(group,son)
+            if son > max_val:
+                max_val = son
+                best_group = group
+            n += 1
+        return max_val,best_group
+
+    def arr_group(self,step,data):
+
+        max_val = 0
+        best_group = []
+        for start in range(0,self.length,1):
+            # yield data[start:]
+            end = start+step
+            self.loop += 1
+            if end >= self.length:
+                continue
+            # print(start, end, step,'******',data[start:end])
+            val = sum(data[start:end])
+            if val > max_val:
+                max_val = val
+                best_group = data[start:end]
+        return max_val,best_group
+
+if __name__ == '__main__':
+    nums = [1, -2, 3, 10, -4, 7, 2, -5, 4]
+    ms_obj = max_son(data=nums)
